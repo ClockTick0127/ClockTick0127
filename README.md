@@ -17,20 +17,22 @@
   <img src="assets/section-projects-light.svg" width="100%" alt="01 Projects — 최근 작업부터 · 담당 역할과 결과">
 </picture>
 
+<!-- projects:start -->
 <div>
 <a href="https://github.com/ClockTick0127/PJT_On-Maeum"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/project-onmaeum-dark.svg">
-  <img src="assets/project-onmaeum-light.svg" width="100%" alt="On:마음 (2026.08–10, 6인) — 가전 전력 사용 패턴으로 독거 어르신의 이상 징후를 감지하는 안심 알림 서비스. 담당: 전력 시뮬레이터와 MQTT 수집 환경 개발. 결과: 1가구 20일치 172.8만 건, 로컬 E2E 적재 유실 0건.">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/project-01-dark.svg">
+  <img src="assets/project-01-light.svg" width="100%" alt="On:마음 (2026.08 — 2026.10, 6인 팀) — 가전 전력 사용 패턴으로 독거 어르신의 이상 징후를 감지하는 안심 알림 서비스. 담당: Data / Pipeline · 전력 시뮬레이터와 MQTT 수집 환경 개발. 결과: 1가구 20일치 172.8만 건 · 로컬 E2E 적재 유실 0건">
 </picture></a>
 <a href="https://youtu.be/OHdWT9M85hU"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/project-bodybuilder-dark.svg">
-  <img src="assets/project-bodybuilder-light.svg" width="100%" alt="BODYBUILDER (2026.07–08, 6인) — 웹캠으로 인식한 4인의 신체 포즈가 게임 속 지형이 되는 협동 게임. 담당: MediaPipe 포즈 인식 개선, WebRTC·프론트엔드 일부, 게임 기믹·사운드.">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/project-02-dark.svg">
+  <img src="assets/project-02-light.svg" width="100%" alt="BODYBUILDER (2026.07 — 2026.08, 6인 팀) — 웹캠으로 인식한 4인의 신체 포즈가 게임 속 지형이 되는 협동 게임. 담당: MediaPipe 포즈 인식 개선 · WebRTC·프론트엔드 일부 · 게임 기믹·사운드. 결과: 관절 미인식·떨림 대응 · 장치 설정 · 촬영자별 암전과 효과음 구현">
 </picture></a>
 <a href="https://youtu.be/YvypqdxtBPQ"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/project-danbi-dark.svg">
-  <img src="assets/project-danbi-light.svg" width="100%" alt="단비 (2026.05–06, 2인) — 당뇨 맞춤형 식단 및 레시피 추천 플랫폼. 담당: Django 추천 API 설계, Vue 3 / Pinia 상태 관리 구현.">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/project-03-dark.svg">
+  <img src="assets/project-03-light.svg" width="100%" alt="단비 (2026.05 — 2026.06, 2인 팀) — 당뇨 맞춤형 식단 및 레시피 추천 플랫폼. 담당: Django 추천 API 설계 · Vue 3 / Pinia 상태 관리 구현. 결과: 맞춤형 레시피 추천 API와 반응형 화면 상태 관리 구현">
 </picture></a>
 </div>
+<!-- projects:end -->
 
 <br>
 
@@ -55,4 +57,5 @@
   <img src="assets/stack-light.svg" width="100%" alt="Language: Java, Python, TypeScript, JavaScript / Frontend: React, Vue, React Query / Backend: Spring Boot, Django, Node.js / Data · Infra: MySQL, Redis, Kafka, MQTT, Docker">
 </picture>
 
-<!-- SVG는 scripts/build.py 로 다시 만듭니다. 내용은 그 파일 위쪽 DATA 영역에서 고치세요. -->
+<!-- projects:start~end 사이와 assets/ 는 GitHub Actions가 scripts/build.py 로 매일 다시 만듭니다.
+     프로젝트는 포트폴리오 사이트의 projects.json 에서, 프로필 문구·스택은 build.py 의 DATA 영역에서 고치세요. -->

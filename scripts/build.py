@@ -4,7 +4,11 @@
   pip install fonttools brotli
   python scripts/build.py
 
-- 내용(프로젝트·스택)은 아래 DATA 영역만 고치면 됩니다.
+- 프로젝트는 포트폴리오 사이트의 projects.json 에서 가져옵니다(PROJECTS_URL).
+  README.md 의 <!-- projects:start --> ~ <!-- projects:end --> 사이도 이 스크립트가 다시 씁니다.
+- 프로필 문구·스택은 아래 DATA 영역에서 고칩니다.
+- GitHub Actions(.github/workflows/update-profile.yml)가 매일 이 스크립트를 실행하고,
+  바뀐 내용이 있을 때만 커밋합니다.
 - 라이트/다크 두 벌을 assets/ 에 만듭니다. README는 <picture>로 테마에 맞는 쪽을 보여 줍니다.
 - 글꼴(IBM Plex Mono, Pretendard · 둘 다 OFL)은 scripts/.fonts 에 처음 한 번 내려받고,
   SVG마다 실제로 쓴 글자만 잘라 woff2로 넣습니다. 그래서 보는 사람 PC에 글꼴이 없어도 똑같이 보입니다.
@@ -14,7 +18,11 @@ from __future__ import annotations
 
 import base64
 import io
+import json
 import math
+import os
+import re
+import urllib.error
 import urllib.request
 from pathlib import Path
 from xml.sax.saxutils import escape
@@ -38,41 +46,13 @@ PROFILE = {
     "clock": (1, 27),
 }
 
-PROJECTS = [
-    {
-        "slug": "onmaeum",
-        "title": "On:마음",
-        "subtitle": "가전 전력 사용 패턴으로 독거 어르신의 이상 징후를 감지하는 안심 알림 서비스",
-        "category": "IoT · Data pipeline",
-        "period": "2026.08 — 2026.10",
-        "team": "6인 팀",
-        "role": "Data / Pipeline · 전력 시뮬레이터와 MQTT 수집 환경 개발",
-        "outcome": "1가구 20일치 172.8만 건 · 로컬 E2E 적재 유실 0건",
-        "tags": ["Python", "MQTT", "Kafka", "Docker"],
-    },
-    {
-        "slug": "bodybuilder",
-        "title": "BODYBUILDER",
-        "subtitle": "웹캠으로 인식한 4인의 신체 포즈가 게임 속 지형이 되는 협동 게임",
-        "category": "Web game · Interaction",
-        "period": "2026.07 — 2026.08",
-        "team": "6인 팀",
-        "role": "MediaPipe 포즈 인식 개선 · WebRTC·프론트엔드 일부 · 게임 기믹·사운드",
-        "outcome": "관절 미인식·떨림 대응 · 장치 설정 · 촬영자별 암전과 효과음 구현",
-        "tags": ["MediaPipe", "React", "TypeScript", "WebRTC"],
-    },
-    {
-        "slug": "danbi",
-        "title": "단비",
-        "subtitle": "당뇨 맞춤형 식단 및 레시피 추천 플랫폼",
-        "category": "Web · Healthcare",
-        "period": "2026.05 — 2026.06",
-        "team": "2인 팀",
-        "role": "Django 추천 API 설계 · Vue 3 / Pinia 상태 관리 구현",
-        "outcome": "맞춤형 레시피 추천 API와 반응형 화면 상태 관리 구현",
-        "tags": ["Vue", "Django"],
-    },
-]
+# 프로젝트는 포트폴리오 사이트의 projects.json 을 그대로 씁니다.
+# 사이트에서 프로젝트를 추가·수정하면 다음 빌드(매일 자동 실행)에서 프로필에도 반영됩니다.
+PROJECTS_URL = os.environ.get("PROJECTS_URL", "https://clocktick0127.github.io/projects.json")
+MAX_PROJECTS = 4  # 프로필에 보여 줄 최대 개수 (projects.json 앞에서부터)
+
+# 카드를 눌렀을 때 갈 곳. 앞에 있는 것부터 쓰고, 비공개 GitHub 저장소는 건너뜁니다.
+LINK_PRIORITY = ["repo", "youtube", "demo", "gitlab", "docs"]
 
 STACK = [
     ("Language", ["Java", "Python", "TypeScript", "JavaScript"]),
@@ -157,7 +137,8 @@ class Font:
         opts.name_IDs = [1, 2]
         opts.notdef_outline = True
         opts.drop_tables += ["meta"]
-        font = TTFont(self.path)
+        # recalcTimestamp=False: 저장 시각이 글꼴에 박히면 매번 결과가 달라져 매일 커밋이 생깁니다.
+        font = TTFont(self.path, recalcTimestamp=False)
         sub = subset.Subsetter(opts)
         sub.populate(text="".join(sorted(chars)))
         sub.subset(font)
@@ -320,28 +301,36 @@ def section_head(num: str, title: str, desc: str, theme: str) -> str:
 # ────────────────────────────────────────────────────────── PROJECT ──
 
 def project_row(i: int, p: dict, theme: str) -> str:
-    s = Svg(W, f"{p['title']} — {p['subtitle']}", theme)
+    s = Svg(W, f"{p['title']} — {p['subtitle']}" if p["subtitle"] else p["title"], theme)
     c = s.c
     gutter, rail, x0 = 168, 192, 220
     max_w = W - x0 - 4
 
     # 왼쪽: 번호 · 기간 · 분야
     s.text(gutter, 46, f"{i + 1:02d}", "mono-md", 14, "accent", anchor="end", ls=1)
-    s.text(gutter, 70, p["period"], "mono", 12.5, "muted", anchor="end")
-    s.text(gutter, 90, p["category"], "mono", 12, "faint", anchor="end")
-    s.text(gutter, 110, p["team"], "sans", 13, "faint", anchor="end")
+    meta_y = 70
+    for value, face, size, color in (
+        (p["period"], "mono", 12.5, "muted"),
+        (p["category"], "mono", 12, "faint"),
+        (p["team"], "sans", 13, "faint"),
+    ):
+        if value:
+            s.text(gutter, meta_y, value, face, size, color, anchor="end")
+            meta_y += 20
 
     # 오른쪽: 내용
     y = 48
     s.text(x0, y, p["title"], "sans-b", 30, "ink", ls=-0.4)
     y += 32
-    for line in wrap(p["subtitle"], "sans", 16.5, max_w):
+    for line in wrap(p["subtitle"], "sans", 16.5, max_w) if p["subtitle"] else []:
         s.text(x0, y, line, "sans", 16.5, "muted")
         y += 25
 
     y += 12
     label_w = 74
     for label, value in (("ROLE", p["role"]), ("RESULT", p["outcome"])):
+        if not value:
+            continue
         lines = wrap(value, "sans", 15, max_w - label_w)
         s.text(x0, y - 1, label, "mono-md", 11, "faint", ls=1.4)
         for line in lines:
@@ -359,7 +348,7 @@ def project_row(i: int, p: dict, theme: str) -> str:
         )
         s.text(cx + tw / 2, y, tag, "mono", 12.5, "muted", anchor="middle")
         cx += tw + 7
-    H = y + 34
+    H = max(y + 34, meta_y + 20)
 
     # 타임라인: 점선 레일 + 마커 (마커 뒤는 페이지 배경색으로 가림)
     s.body.insert(
@@ -393,21 +382,125 @@ def stack(theme: str) -> str:
 
 # ───────────────────────────────────────────────────────────── MAIN ──
 
-def write(name: str, svg: str):
-    path = ASSETS / name
-    path.write_text(svg, encoding="utf-8")
-    print(f"  {name:32s} {len(svg.encode()) / 1024:6.1f} KB")
+def fetch(url: str) -> bytes:
+    req = urllib.request.Request(url, headers={"User-Agent": "clocktick-profile-build"})
+    with urllib.request.urlopen(req, timeout=30) as res:
+        return res.read()
+
+
+def is_public(url: str) -> bool:
+    """github.com 저장소 링크면 공개 여부를 확인합니다. 비공개면 로그인 없이 404가 납니다."""
+    m = re.match(r"https://github\.com/([^/]+)/([^/#?]+)", url)
+    if not m:
+        return True
+    try:
+        fetch(f"https://github.com/{m[1]}/{m[2]}")
+        return True
+    except urllib.error.HTTPError as e:
+        return e.code != 404
+
+
+def youtube_url(v: str) -> str:
+    return v if v.startswith("http") else f"https://www.youtube.com/watch?v={v}"
+
+
+def load_projects() -> list[dict]:
+    raw = json.loads(fetch(PROJECTS_URL))
+    if not isinstance(raw, list) or not raw:
+        raise SystemExit(f"projects.json 이 비어 있거나 형식이 다릅니다: {PROJECTS_URL}")
+
+    projects = []
+    for item in raw[:MAX_PROJECTS]:
+        links = dict(item.get("links") or {})
+        yt = links.get("youtube") or item.get("youtube") or item.get("youtubeId")
+        if yt:
+            links["youtube"] = youtube_url(yt)
+        href = next(
+            (links[k] for k in LINK_PRIORITY if links.get(k) and "your-id" not in links[k] and is_public(links[k])),
+            "",
+        )
+        team = (item.get("team") or "").strip()
+        if team and "팀" not in team:
+            team += " 팀"
+        projects.append({
+            "title": item["title"],
+            "subtitle": item.get("subtitle", ""),
+            "category": item.get("category", ""),
+            "period": item.get("period", ""),
+            "team": team,
+            "role": item.get("role") or item.get("focus", ""),
+            "outcome": item.get("outcome", ""),
+            "tags": item.get("tags") or [],
+            "href": href,
+        })
+    return projects
+
+
+def write(path: Path, text: str):
+    # 어느 OS에서 돌려도 결과가 같도록 줄바꿈을 LF로 고정합니다.
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+    print(f"  {path.relative_to(ROOT).as_posix():40s} {len(text.encode()) / 1024:6.1f} KB")
+
+
+def picture(base: str, alt: str) -> str:
+    return (
+        "<picture>\n"
+        f'  <source media="(prefers-color-scheme: dark)" srcset="assets/{base}-dark.svg">\n'
+        f'  <img src="assets/{base}-light.svg" width="100%" alt="{escape(alt, {chr(34): "&quot;"})}">\n'
+        "</picture>"
+    )
+
+
+def projects_block(projects: list[dict]) -> str:
+    rows = []
+    for i, p in enumerate(projects):
+        facts = ", ".join(x for x in (p["period"], p["team"]) if x)
+        alt = f"{p['title']}" + (f" ({facts})" if facts else "") + (f" — {p['subtitle']}" if p["subtitle"] else "")
+        if p["role"]:
+            alt += f". 담당: {p['role']}"
+        if p["outcome"]:
+            alt += f". 결과: {p['outcome']}"
+        pic = picture(f"project-{i + 1:02d}", alt)
+        rows.append(f'<a href="{escape(p["href"])}">{pic}</a>' if p["href"] else pic)
+    # <div>로 감싸야 GitHub가 <a><picture>를 쪼개지 않고 라이트/다크 전환도 제대로 됩니다.
+    return "<div>\n" + "\n".join(rows) + "\n</div>"
+
+
+def update_readme(projects: list[dict]):
+    path = ROOT / "README.md"
+    text = path.read_text(encoding="utf-8")
+    start, end = "<!-- projects:start -->", "<!-- projects:end -->"
+    if start not in text or end not in text:
+        raise SystemExit("README.md 에 <!-- projects:start --> / <!-- projects:end --> 표시가 없습니다.")
+    head, rest = text.split(start, 1)
+    _, tail = rest.split(end, 1)
+    write(path, f"{head}{start}\n{projects_block(projects)}\n{end}{tail}")
 
 
 def main():
     ASSETS.mkdir(exist_ok=True)
+    projects = load_projects()
+    print(f"  projects.json → {len(projects)}개: {', '.join(p['title'] for p in projects)}")
+
+    made = set()
     for theme in THEMES:
-        write(f"header-{theme}.svg", header(theme))
+        files = {f"header-{theme}.svg": header(theme), f"stack-{theme}.svg": stack(theme)}
         for slug, num, title, desc in SECTIONS:
-            write(f"section-{slug}-{theme}.svg", section_head(num, title, desc, theme))
-        for i, p in enumerate(PROJECTS):
-            write(f"project-{p['slug']}-{theme}.svg", project_row(i, p, theme))
-        write(f"stack-{theme}.svg", stack(theme))
+            files[f"section-{slug}-{theme}.svg"] = section_head(num, title, desc, theme)
+        for i, p in enumerate(projects):
+            files[f"project-{i + 1:02d}-{theme}.svg"] = project_row(i, p, theme)
+        for name, svg in files.items():
+            write(ASSETS / name, svg)
+            made.add(name)
+
+    # 프로젝트가 줄었거나 이름 규칙이 바뀌어 더는 쓰지 않는 SVG는 지웁니다.
+    for old in ASSETS.glob("*.svg"):
+        if old.name not in made:
+            old.unlink()
+            print(f"  removed {old.name}")
+
+    update_readme(projects)
 
 
 if __name__ == "__main__":
