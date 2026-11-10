@@ -27,7 +27,7 @@
   <source media="(prefers-color-scheme: dark)" srcset="assets/project-02-dark.svg">
   <img src="assets/project-02-light.svg" width="100%" alt="BODYBUILDER (2026.07 — 2026.08, 6인 팀) — 웹캠으로 인식한 4인의 신체 포즈가 게임 속 지형이 되는 협동 게임. 담당: MediaPipe 포즈 인식 개선 · WebRTC·프론트엔드 일부 · 게임 기믹·사운드. 결과: 관절 미인식·떨림 대응 · 장치 설정 · 촬영자별 암전과 효과음 구현">
 </picture></a>
-<a href="https://github.com/ClockTick0127/FJT"><picture>
+<a href="https://youtu.be/YvypqdxtBPQ"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/project-03-dark.svg">
   <img src="assets/project-03-light.svg" width="100%" alt="단비 (2026.05 — 2026.06, 2인 팀) — 당뇨 맞춤형 식단 및 레시피 추천 플랫폼. 담당: Django 추천 API 설계 · Vue 3 / Pinia 상태 관리 구현. 결과: 맞춤형 레시피 추천 API와 반응형 화면 상태 관리 구현">
 </picture></a>
