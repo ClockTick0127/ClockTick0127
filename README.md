@@ -21,7 +21,7 @@
 <div>
 <a href="https://github.com/DevLink-labs/DevLink_client"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/project-01-dark.svg">
-  <img src="assets/project-01-light.svg" width="100%" alt="DevLink (주요 구현 2026.10.27–11.12, 6인 팀 프로젝트) — AI agent를 연결해 팀의 작업 요청과 결과를 공유하는 개발 협업 도구. 담당: AI 도구 연결을 Rust CLI로 자동화하고, 같은 로직을 Windows 설치 앱에서 재사용했습니다.. 결과: 연결 설정 9단계 통합 · 기존 연결 4개 복원">
+  <img src="assets/project-01-light.svg" width="100%" alt="DevLink (2026.10 — 2026.11, 6인 팀) — AI agent를 연결해 팀의 작업 요청과 결과를 공유하는 개발 협업 도구. 담당: AI 도구 연결을 Rust CLI로 자동화하고, 같은 로직을 Windows 설치 앱에서 재사용했습니다.. 결과: 연결 설정 9단계 통합 · 기존 연결 4개 복원">
 </picture></a>
 <a href="https://github.com/ClockTick0127/PJT_On-Maeum"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/project-02-dark.svg">
