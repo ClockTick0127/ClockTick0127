@@ -19,17 +19,21 @@
 
 <!-- projects:start -->
 <div>
-<a href="https://github.com/ClockTick0127/PJT_On-Maeum"><picture>
+<a href="https://github.com/DevLink-labs/DevLink_client"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/project-01-dark.svg">
-  <img src="assets/project-01-light.svg" width="100%" alt="On:마음 (2026.08 — 2026.10, 6인 팀) — 가전 전력 사용 패턴으로 독거 어르신의 이상 징후를 감지하는 안심 알림 서비스. 담당: Data / Pipeline · 전력 시뮬레이터와 MQTT 수집 환경 개발. 결과: 1가구 20일치 172.8만 건 · 로컬 E2E 적재 유실 0건">
+  <img src="assets/project-01-light.svg" width="100%" alt="DevLink (주요 구현 2026.10.27–11.12, 6인 팀 프로젝트) — AI agent를 연결해 팀의 작업 요청과 결과를 공유하는 개발 협업 도구. 담당: AI 도구 연결을 Rust CLI로 자동화하고, 같은 로직을 Windows 설치 앱에서 재사용했습니다.. 결과: 연결 설정 9단계 통합 · 기존 연결 4개 복원">
+</picture></a>
+<a href="https://github.com/ClockTick0127/PJT_On-Maeum"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/project-02-dark.svg">
+  <img src="assets/project-02-light.svg" width="100%" alt="On:마음 (2026.08 — 2026.10, 6인 팀) — 가전 전력 사용 패턴으로 독거 어르신의 이상 징후를 감지하는 안심 알림 서비스. 담당: Data / Pipeline · 전력 시뮬레이터와 MQTT 수집 환경 개발. 결과: 1가구 20일치 172.8만 건 · 로컬 E2E 적재 유실 0건">
 </picture></a>
 <a href="https://youtu.be/OHdWT9M85hU"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/project-02-dark.svg">
-  <img src="assets/project-02-light.svg" width="100%" alt="BODYBUILDER (2026.07 — 2026.08, 6인 팀) — 웹캠으로 인식한 4인의 신체 포즈가 게임 속 지형이 되는 협동 게임. 담당: MediaPipe 포즈 인식 개선 · WebRTC·프론트엔드 일부 · 게임 기믹·사운드. 결과: 관절 미인식·떨림 대응 · 장치 설정 · 촬영자별 암전과 효과음 구현">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/project-03-dark.svg">
+  <img src="assets/project-03-light.svg" width="100%" alt="BODYBUILDER (2026.07 — 2026.08, 6인 팀) — 웹캠으로 인식한 4인의 신체 포즈가 게임 속 지형이 되는 협동 게임. 담당: MediaPipe 포즈 인식 개선 · WebRTC·프론트엔드 일부 · 게임 기믹·사운드. 결과: 관절 미인식·떨림 대응 · 장치 설정 · 촬영자별 암전과 효과음 구현">
 </picture></a>
 <a href="https://youtu.be/YvypqdxtBPQ"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/project-03-dark.svg">
-  <img src="assets/project-03-light.svg" width="100%" alt="단비 (2026.05 — 2026.06, 2인 팀) — 당뇨 맞춤형 식단 및 레시피 추천 플랫폼. 담당: Django 추천 API 설계 · Vue 3 / Pinia 상태 관리 구현. 결과: 맞춤형 레시피 추천 API와 반응형 화면 상태 관리 구현">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/project-04-dark.svg">
+  <img src="assets/project-04-light.svg" width="100%" alt="단비 (2026.05 — 2026.06, 2인 팀) — 당뇨 맞춤형 식단 및 레시피 추천 플랫폼. 담당: Django 추천 API 설계 · Vue 3 / Pinia 상태 관리 구현. 결과: 맞춤형 레시피 추천 API와 반응형 화면 상태 관리 구현">
 </picture></a>
 </div>
 <!-- projects:end -->
