@@ -55,8 +55,8 @@ MAX_PROJECTS = 4  # 프로필에 보여 줄 최대 개수 (projects.json 앞에�
 LINK_PRIORITY = ["repo", "youtube", "demo", "gitlab", "docs"]
 
 STACK = [
-    ("Language", ["Java", "Python", "TypeScript", "JavaScript"]),
-    ("Frontend", ["React", "Vue", "React Query"]),
+    ("Language", ["Java", "Python", "TypeScript", "JavaScript", "Rust"]),
+    ("Frontend", ["React", "Vue", "React Query", "Electron"]),
     ("Backend", ["Spring Boot", "Django", "Node.js"]),
     ("Data · Infra", ["MySQL", "Redis", "Kafka", "MQTT", "Docker"]),
 ]

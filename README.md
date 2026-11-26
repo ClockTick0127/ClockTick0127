@@ -58,7 +58,7 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/stack-dark.svg">
-  <img src="assets/stack-light.svg" width="100%" alt="Language: Java, Python, TypeScript, JavaScript / Frontend: React, Vue, React Query / Backend: Spring Boot, Django, Node.js / Data · Infra: MySQL, Redis, Kafka, MQTT, Docker">
+  <img src="assets/stack-light.svg" width="100%" alt="Language: Java, Python, TypeScript, JavaScript, Rust / Frontend: React, Vue, React Query, Electron / Backend: Spring Boot, Django, Node.js / Data · Infra: MySQL, Redis, Kafka, MQTT, Docker">
 </picture>
 
 <!-- projects:start~end 사이와 assets/ 는 GitHub Actions가 scripts/build.py 로 매일 다시 만듭니다.
